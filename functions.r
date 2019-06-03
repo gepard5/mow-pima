@@ -1,5 +1,5 @@
 g_min_precision = 0.75
-g_penalty = 0.5
+g_penalty = 0.1
 
 
 find.treshold.function <- function(pd.attributes, pd.classes){
@@ -183,12 +183,11 @@ classify_function <- function( train_data, test_data, attr_list, values_list) {
                 if( good/all < g_min_precision ) {
                         penalty <- g_penalty
                 }
-                return ((tp/positive)*penalty)
+                return (tp*penalty)
         }
 }
 
 fitness_function <- function(attr_list) {
-    print("fotness")
         n <- length(attr_list) + 1
         values_list <- get_thresholds( train_data, attr_list, 1, 0, as.list(rep(0, length(attr_list))))
         return(classify_function(train_data, test_data, attr_list, values_list))
@@ -198,7 +197,6 @@ fitness_function <- function(attr_list) {
 colMax <- function(data) { return(max(data, na.rm=TRUE)) }
 
 fitness_thresh_function <- function(attr_thresh_list) {
-        print("library")
         sample <- sample.int(n = nrow(PimaData), size = floor(.8*nrow(PimaData)))
         train_data <- PimaData[sample, ]
         test_data <- PimaData[-sample, ]
@@ -222,7 +220,7 @@ test_attribute_tree <- function(m_maxIter, m_popSize, m_runNumber, m_elitism, m_
     GA <- ga(type = "real-valued",
              fitness = fitness_function, lower = rep(1, tree_len),
              upper = rep(g_columns, tree_len), popSize = m_popSize,
-             maxiter=m_maxIter, run=m_runNumber, parallel=TRUE,
+             maxiter=m_maxIter, run=m_runNumber,
              elitism = base::max(1, round(m_popSize*m_elitism) ),
              seed=1234,
              pcrossover = m_crossoverChance, pmutation = m_mutationChance)
@@ -244,7 +242,7 @@ test_attr_thresh_tree <- function(m_maxIter, m_popSize, m_runNumber, m_elitism, 
     GA <- ga(type = "real-valued",
              fitness = fitness_thresh_function, lower = m_lower,
              upper = m_upper, popSize = m_popSize,
-             maxiter=m_maxIter, run=m_runNumber, parallel=TRUE,
+             maxiter=m_maxIter, run=m_runNumber,
              elitism = base::max(1, round(m_popSize*m_elitism) ),
              seed=1234,
              pcrossover = m_crossoverChance, pmutation = m_mutationChance)

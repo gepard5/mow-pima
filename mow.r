@@ -1,5 +1,5 @@
 PimaData <- read.csv(file="./pima_dataset.csv", header=TRUE, sep=",")
-set.seed(1337)
+set.seed(1500)
 repeat{
   sample <- sample.int(n = nrow(PimaData), size = floor(.8*nrow(PimaData)))
   pd.train <- PimaData[sample, ]
@@ -18,10 +18,10 @@ g_columns <- ncol(PimaData) - 1
 g_maxIter <- 20
 g_popSize <- 20
 g_runNumber <- 20
-g_elitism <- 0.2
+g_elitism <- 0.1
 g_crossoverChance <- 0.8
-g_mutationChance <- 0.2
-g_tree_levels <- 4
+g_mutationChance <- 0.1
+g_tree_levels <- 5
 
 library(GA)
 source("./functions.r")
