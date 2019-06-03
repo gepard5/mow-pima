@@ -158,15 +158,16 @@ classify_function <- function( train_data, test_data, attr_list, values_list) {
         positive <- 0
         all <- nrow(test_data)
         good <- 0
+        class_column <- ncol(train_data)
         for(i in 1:nrow(test_data) )
         {
                 obs <- classify( test_data[i, ], attr_list, values_list, classes_list, 1, 0)
-                if( obs == test_data[i, 9] ) {
+                if( obs == test_data[i, class_column] ) {
                         good <- good + 1
                 }
                 if( obs == 1 ) {
                         positive <- positive + 1
-                        if( test_data[i, 9] == 1 ) {
+                        if( test_data[i, class_column] == 1 ) {
                                 tp <- tp + 1
                         }
                 }
@@ -184,14 +185,10 @@ classify_function <- function( train_data, test_data, attr_list, values_list) {
                 }
                 return ((tp/positive)*penalty)
         }
-#        return(good/all)
 }
 
 fitness_function <- function(attr_list) {
     print("fotness")
-        sample <- sample.int(n = nrow(PimaData), size = floor(.8*nrow(PimaData)))
-        train_data <- PimaData[sample, ]
-        test_data <- PimaData[-sample, ]
         n <- length(attr_list) + 1
         values_list <- get_thresholds( train_data, attr_list, 1, 0, as.list(rep(0, length(attr_list))))
         return(classify_function(train_data, test_data, attr_list, values_list))
@@ -217,3 +214,41 @@ fitness_thresh_function <- function(attr_thresh_list) {
         }
         return(classify_function(train_data, test_data, attr_list, values_list))
 }
+
+library(GA)
+
+test_attribute_tree <- function(m_maxIter, m_popSize, m_runNumber, m_elitism, m_crossoverChance, m_mutationChance, m_tree_levels) {
+    tree_len <- 2 ** m_tree_levels - 1
+    GA <- ga(type = "real-valued",
+             fitness = fitness_function, lower = rep(1, tree_len),
+             upper = rep(g_columns, tree_len), popSize = m_popSize,
+             maxiter=m_maxIter, run=m_runNumber, parallel=TRUE,
+             elitism = base::max(1, round(m_popSize*m_elitism) ),
+             seed=1234,
+             pcrossover = m_crossoverChance, pmutation = m_mutationChance)
+    summary(GA)
+}
+
+
+test_attr_thresh_tree <- function(m_maxIter, m_popSize, m_runNumber, m_elitism, m_crossoverChance, m_mutationChance, m_tree_levels) {
+    tree_len <- (2 ** m_tree_levels - 1) * 2
+    m_upper <- rep(1, tree_len)
+    m_lower <- rep(1, tree_len)
+    for( i in 1:(2 ** m_tree_levels - 1))
+    {
+        m_upper[[2*i -1]] <- g_columns
+        m_upper[[2*i]] <- 1
+        m_lower[[2*i - 1]] <- 1
+        m_lower[[2*i ]] <- 0
+    }
+    GA <- ga(type = "real-valued",
+             fitness = fitness_thresh_function, lower = m_lower,
+             upper = m_upper, popSize = m_popSize,
+             maxiter=m_maxIter, run=m_runNumber, parallel=TRUE,
+             elitism = base::max(1, round(m_popSize*m_elitism) ),
+             seed=1234,
+             pcrossover = m_crossoverChance, pmutation = m_mutationChance)
+    summary(GA)
+}
+
+
