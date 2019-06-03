@@ -226,7 +226,7 @@ test_attribute_tree <- function(m_maxIter, m_popSize, m_runNumber, m_elitism, m_
              elitism = base::max(1, round(m_popSize*m_elitism) ),
              seed=1234,
              pcrossover = m_crossoverChance, pmutation = m_mutationChance)
-    summary(GA)
+    return(GA)
 }
 
 
@@ -248,7 +248,7 @@ test_attr_thresh_tree <- function(m_maxIter, m_popSize, m_runNumber, m_elitism, 
              elitism = base::max(1, round(m_popSize*m_elitism) ),
              seed=1234,
              pcrossover = m_crossoverChance, pmutation = m_mutationChance)
-    summary(GA)
+    return(GA)
 }
 
 

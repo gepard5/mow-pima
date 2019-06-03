@@ -23,10 +23,13 @@ g_crossoverChance <- 0.8
 g_mutationChance <- 0.1
 g_tree_levels <- 5
 
+library(GA)
 source("./functions.r")
 
 
 #print("Test attribute tree")
-#test_attribute_tree(g_maxIter, g_popSize, g_runNumber, g_elitism, g_crossoverChance, g_mutationChance, g_tree_levels)
+#ga1 <- test_attribute_tree(g_maxIter, g_popSize, g_runNumber, g_elitism, g_crossoverChance, g_mutationChance, g_tree_levels)
+#summary(ga1)
 #print("Test attribute threshold tree")
-#test_attr_thresh_tree(g_maxIter, g_popSize, g_runNumber, g_elitism, g_crossoverChance, g_mutationChance, g_tree_levels)
+#ga2 <- test_attr_thresh_tree(g_maxIter, g_popSize, g_runNumber, g_elitism, g_crossoverChance, g_mutationChance, g_tree_levels)
+#summary(ga2)
